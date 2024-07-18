@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" type="text/css" href="..\company-mainlook\css\scanboard.css" />
+
+    <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts-gl/dist/echarts-gl.min.js"></script>
+    <script src=".\js\ECharts6.js" defer></script>
+<style>
+    .summaryBtn1 {
+        background: transparent;
+        border: none;
+        cursor: pointer;
+		color: rgb(107, 176, 221); /* 默认字体颜色调节为蓝色 */
+	}
+
+	.summaryBtn1:hover {
+        background: transparent;
+        border: none;
+        cursor: pointer;
+		color: #54ffff; /* 鼠标触碰时显示的颜色，例如红色 */
+	}
+    /* #sales { width: 100%; height: 250px; display: yes; }
+    #region { width: 100%; height: 200px; display: yes; } */
+</style>
+</head>
+
+<body>
+    <!-- 头部模块 -->
+    <div class="header">
+        <div class="title">
+            <span>数据可视化大屏展示系统</span>
+        </div>
+        <div class="time">
+            <span></span>
+        </div>
+        <div class="company">
+            <span >
+                <a href="..\company-mainlook\scanboard.html">某公司物流汇总看板</a>
+            </span>
+        </div>
+    </div>
+
+    <!-- 主题模块 -->
+    <div class="main">
+        <div class="animate">
+            <!-- 浮动层 -->
+            <div class="float">
+                <div class="floating1">
+                    <div id="roate1">
+                        <!-- <div class="roate-item">
+                            <p>12356</p>
+                            <span>销售额</span>
+                        </div>
+                        <div class="roate-item">
+                            <p>53%</p>
+                            <span>同比</span>
+                        </div> -->
+                        <div class="roate-item">
+                            <p style="color: rgb(160, 224, 171);">5946885</p>
+                            <span style="color: rgb(160, 224, 171);">货品5</span>
+                        </div>
+                    </div>
+                    <p class="pm"  style="color: rgb(160, 224, 171);">NO.5</p>
+                </div>
+                <div class="floating2">
+                    <div id="roate2">
+                        <!-- <div class="roate-item2">
+                            <p>12356</p>
+                            <span>销售额</span>
+                        </div>
+                        <div class="roate-item2">
+                            <p>53%</p>
+                            <span>同比</span>
+                        </div> -->
+                        <div class="roate-item2">
+                            <p style="color: rgb(151, 226, 226);">5946885</p>
+                            <span style="color: rgb(151, 226, 226);">货品6</span>
+                        </div>
+                    </div>
+                    <p class="pm2" style="color: rgb(151, 226, 226);">NO.4</p>
+                </div>
+                <div class="floating3">
+                    <div id="roate3">
+                        <!-- <div class="roate-item3">
+                            <p>12356</p>
+                            <span>销售额</span>
+                        </div>
+                        <div class="roate-item3">
+                            <p>53%</p>
+                            <span>同比</span>
+                        </div> -->
+                        <div class="roate-item3">
+                            <p style="color: rgb(102, 221, 191)">30536679</p>
+                            <span style="color: rgb(102, 221, 191)">货品2</span>
+                        </div>
+                    </div>
+                    <p class="pm3" style="color: rgb(102, 221, 191)">NO.3</p>
+                </div>
+                <div class="floating4">
+                    <div id="roate4">
+                        <!-- <div class="roate-item4">
+                            <p>12356</p>
+                            <span>销售额</span>
+                        </div>
+                        <div class="roate-item4">
+                            <p>53%</p>
+                            <span>同比</span>
+                        </div> -->
+                        <div class="roate-item4">
+                            <p style="color: rgb(57, 151, 228)">46215058</p>
+                            <span style="color: rgb(57, 151, 228)">货品1</span>
+                        </div>
+                    </div>
+                    <p class="pm4" style="color: rgb(57, 151, 228)">NO.2</p>
+                </div>
+                <div class="floating5">
+                    <div id="roate5">
+                        <!-- <div class="roate-item5">
+                            <p>12356</p>
+                            <span>销售额</span>
+                        </div>
+                        <div class="roate-item5">
+                            <p>53%</p>
+                            <span>同比</span>
+                        </div> -->
+                        <div class="roate-item5">
+                            <p style="color: rgb(9, 243, 243)">52054632</p>
+                            <span style="color: rgb(9, 243, 243)">货品3</span>
+                        </div>
+                    </div>
+                    <p class="pm5" style="color: rgb(9, 243, 243)">NO.1</p>
+                </div>
+            </div>
+            <div class="sum">
+                <div class="data">
+                    <p style="color: rgb(241, 107, 66)">总销售额</p>
+                    <span style="color: rgb(241, 107, 66)">140211754</span>
+                </div>
+                <div class="cicle1"></div>
+                <canvas id="canvas1"></canvas>
+                <canvas id="canvas2"></canvas>
+                <div class="data1">
+                    <div class="qiu">
+                        <p style="color: rgb(57, 151, 228)">88%</p>
+                    </div>
+                    <span style="color: rgb(57, 151, 228)">准时率</span>
+                </div>
+                <div class="data2">
+                    <div class="qiu">
+                        <p style="color: rgb(102, 221, 191)">67%</p>
+                    </div>
+                    <span style="color: rgb(102, 221, 191)">合格率</span>
+                </div>
+                <div class="data3">
+                    <div class="qiu">
+                        <p style="color: rgb(9, 243, 243)">15%</p>
+                    </div>
+                    <span style="color: rgb(9, 243, 243)">返修率</span>
+                </div>
+                <div class="data4">
+                    <div class="qiu">
+                        <p style="color: rgb(209, 221, 102)">16%</p>
+                    </div>
+                    <span style="color: rgb(209, 221, 102)">拒货率</span>
+                </div>
+            </div>
+        </div>
+        <div class="charts">
+            <div class="charts1">
+                <div class="itemTit">
+                    <span class="border-yellow">产品销售情况</span>
+                    <button class="summaryBtn1" id="toggle1" style="position: absolute; right: 90px;top: 155px;">图表</button>
+
+                </div>
+                <div class="charts-content1 content">
+                    <table >
+                        <thead>
+                            <tr>
+                                <td style="color: #a0adee">排名</td>
+                                <td style="color: #a0adee">门店</td>
+                                <td style="color: #a0adee">销售数量</td>
+                                <td style="color: #a0adee">销售金额</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="color: #0ed6f0">01</td>
+                                <td style="color: #0ed6f0">货品3</td>
+                                <td style="color: #0ed6f0">9073件</td>
+                                <td style="color: #0ed6f0">5205万<span class="chart1"></span></td>
+                            </tr>
+                            <tr>
+                                <td style="color: #40eec8">02</td>
+                                <td style="color: #40eec8">货品1</td>
+                                <td style="color: #40eec8">3417件</td>
+                                <td  style="color: #40eec8">4621万<span class="chart2"></span></td>
+                            </tr>
+                            <tr>
+                                <td style="color: #74e8cf">03</td>
+                                <td style="color: #74e8cf">货品2</td>
+                                <td style="color: #74e8cf">55321件</td>
+                                <td style="color: #74e8cf">3053万<span class="chart3"></span></td>
+                            </tr>
+                            <tr>
+                                <td style="color: #82e2e2">04</td>
+                                <td style="color: #82e2e2">货品6</td>
+                                <td style="color: #82e2e2">8401件</td>
+                                <td style="color: #82e2e2">595万<span class="chart4"></span></td>
+                            </tr>
+                            <tr>
+                                <td style="color: #b7db73">05</td>
+                                <td style="color: #b7db73">货品5</td>
+                                <td style="color: #b7db73">5733件</td>
+                                <td style="color: #b7db73">304万<span class="chart5"></span></td>
+                            </tr>
+                            <tr>
+                                <td style="color: #dbbd73">06</td>
+                                <td style="color: #dbbd73">货品4</td>
+                                <td style="color: #dbbd73">5229件</td>
+                                <td style="color: #dbbd73">242万<span class="chart6"></span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div id="sales" class="charts-content1 content"></div>
+
+            </div>
+            <div class="charts2">
+                <div class="itemTit">
+                    <span class="border-yellow">地区销售排名</span>
+                    <button class="summaryBtn1" id="toggle2" style="position: absolute; right: 90px;top: 475px;">图表</button>
+                </div>
+                <div class="charts-content2 content">
+                    <table>
+                        <thead>
+                            <tr>
+                                <td style="color: #a0adee">排名</td>
+                                <td style="color: #a0adee">地区</td>
+                                <td style="color: #a0adee">销售数量</td>
+                                <td style="color: #a0adee">销售金额</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="color: #0ed6f0">01</td>
+                                <td style="color: #0ed6f0">华北</td>
+                                <td style="color: #0ed6f0">11900件</td>
+                                <td style="color: #0ed6f0">63432275元<span class="chart1"></span></td>
+                            </tr>
+                            <tr>
+                                <td style="color: #40eec8">02</td>
+                                <td style="color: #40eec8">华东</td>
+                                <td style="color: #40eec8">53811件</td>
+                                <td style="color: #40eec8">29319629元<span class="chart2"></span></td>
+                            </tr>
+                            <tr>
+                                <td style="color: #74e8cf">03</td>
+                                <td style="color: #74e8cf">华南</td>
+                                <td style="color: #74e8cf">579件</td>
+                                <td style="color: #74e8cf">24552774元<span class="chart3"></span></td>
+                            </tr>
+                            <tr>
+                                <td style="color: #82e2e2">04</td>
+                                <td style="color: #82e2e2">西北</td>
+                                <td style="color: #82e2e2">5240件</td>
+                                <td style="color: #82e2e2">12706615元<span class="chart4"></span></td>
+                            </tr>
+                            <tr>
+                                <td style="color: #b7db73">05</td>
+                                <td style="color: #b7db73">马来西亚</td>
+                                <td style="color: #b7db73">9911件</td>
+                                <td style="color: #b7db73">7163935元<span class="chart5"></span></td>
+                            </tr>
+                            <tr>
+                                <td style="color: #dbbd73">06</td>
+                                <td style="color: #dbbd73">泰国</td>
+                                <td style="color: #dbbd73">5733件</td>
+                                <td style="color: #dbbd73">3036526元<span class="chart6"></span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div id="region" class="charts-content2 content"></div>
+
+            </div>
+        </div>
+    </div>
+</body>
+<script src="./js/jquery-1.11.0.min.js"></script>
+<script src="./js/echarts.min.js"></script>
+<script src="./js/main.js"></script>
+
+</html>

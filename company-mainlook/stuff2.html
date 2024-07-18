@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>3D Bar Chart</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="css/reset.css" />
+    <link rel="stylesheet" type="text/css" href="css/scanboard.css" />
+    <link rel="stylesheet" type="text/css" href="css/animsition.css" />
+    <link rel="stylesheet" type="text/css" href="css/jquery.shCircleLoader.css" />
+
+    <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts-gl/dist/echarts-gl.min.js"></script>
+    <script src="..\processed_data.js"></script> <!-- Include the generated data file -->
+</head>
+<body>
+
+  <div id="main" style="width: 100%; height: 800px;">
+    <div class="scanboardWp animsition"></div>
+  </div>
+</div>
+<script type="text/javascript">
+    var chartDom = document.getElementById('main');
+    var myChart = echarts.init(chartDom);
+    var option;
+
+    option = {
+        tooltip: {},
+        visualMap: {
+            max: 50,
+            top: 250,
+            min: 0,
+            calculable: true,
+            textStyle: {
+                    color: '#ade6f0' // 标题颜色改为 #ade6f0
+                  },
+            inRange: {
+                color: [
+                    '#313695', '#4575b4', '#74add1', '#abd9e9', '#e0f3f8', '#ffffbf',
+                    '#fee090', '#fdae61', '#f46d43', '#d73027', '#54ffff'
+                ]
+            }
+        },
+        title: {
+                text: '货品2的具体销售情况',
+                left: 'center',
+                top:100,
+                textStyle: {
+                    color: '#ade6f0' // 标题颜色改为 #ade6f0
+                  }
+            },
+        xAxis3D: {
+            type: 'category',
+            name: "销售日",
+            data: days,
+            axisLine: {
+                    lineStyle: {
+                      color: '#ade6f0' // y轴轴线颜色改为 #ade6f0
+                    }
+                  },
+                  axisTick: {
+                    lineStyle: {
+                      color: '#ade6f0' // y轴刻度线颜色改为 #ade6f0
+                    }
+                  },
+                  axisLabel: {
+                    color: '#ade6f0' // y轴刻度标签颜色改为 #ade6f0
+                  }
+        },
+        yAxis3D: {
+            type: 'category',
+            data: months,
+            name: "销售月份",
+            axisLine: {
+                    lineStyle: {
+                      color: '#ade6f0' // y轴轴线颜色改为 #ade6f0
+                    }
+                  },
+                  axisTick: {
+                    lineStyle: {
+                      color: '#ade6f0' // y轴刻度线颜色改为 #ade6f0
+                    }
+                  },
+                  axisLabel: {
+                    color: '#ade6f0' // y轴刻度标签颜色改为 #ade6f0
+                  }
+        },
+        zAxis3D: {
+            type: 'value',
+            name: "销售量(件)",
+            fontSize: 24,
+            axisLine: {
+                    lineStyle: {
+                      color: '#ade6f0' // y轴轴线颜色改为 #ade6f0
+                    }
+                  },
+                  axisTick: {
+                    lineStyle: {
+                      color: '#ade6f0' // y轴刻度线颜色改为 #ade6f0
+                    }
+                  },
+                  axisLabel: {
+                    color: '#ade6f0' // y轴刻度标签颜色改为 #ade6f0
+                  }
+        },
+        grid3D: {
+            boxWidth: 200,
+            boxDepth: 80,
+            viewControl: {
+                // projection: 'orthographic'
+            },
+            light: {
+                main: {
+                    intensity: 1.2,
+                    shadow: true
+                },
+                ambient: {
+                    intensity: 0.3
+                }
+            }
+        },
+        series: [{
+            type: 'bar3D',
+            data: data.map(function (item) {
+                return {
+                    value: [item[1], item[0], item[2]]
+                };
+            }),
+            shading: 'lambert',
+            label: {
+                fontSize: 24,
+                borderWidth: 1
+            },
+            emphasis: {
+                label: {
+                    fontSize: 20,
+                    color: '#900'
+                },
+                itemStyle: {
+                    color: '#900'
+                }
+            }
+        }]
+    };
+
+    option && myChart.setOption(option);
+</script>
+</body>
+</html>

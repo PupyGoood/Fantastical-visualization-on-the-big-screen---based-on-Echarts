@@ -1,0 +1,820 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+<title>看板</title>
+<link rel="stylesheet" type="text/css" href="css/reset.css" />
+<link rel="stylesheet" type="text/css" href="css/scanboard.css" />
+<link rel="stylesheet" type="text/css" href="css/animsition.css" />
+<link rel="stylesheet" type="text/css" href="css/jquery.shCircleLoader.css" />
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/jquery.shCircleLoader-min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts-gl/dist/echarts-gl.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+<script>
+	// 调试代码：确认 echarts 和 echarts-gl 加载情况
+	document.addEventListener('DOMContentLoaded', function() {
+            console.log('ECharts version:', echarts.version);
+            console.log('ECharts GL loaded:', typeof echarts.graphicGL !== 'undefined');
+        });
+</script>
+<!-- 引入外部JS文件 -->
+<script src=".\js\ECharts1.js" defer></script>
+<script src=".\js\ECharts2.js" defer></script>
+<script src=".\js\ECharts3.js"></script>
+<script src=".\js\ECharts4.js" defer></script>
+<script src=".\js\ECharts5.js" defer></script>
+
+<style>
+	.summaryBtn1 {
+		color: rgb(107, 176, 221); /* 默认字体颜色调节为蓝色 */
+	}
+
+	.summaryBtn1:hover {
+		color: #54ffff; /* 鼠标触碰时显示的颜色，例如红色 */
+	}
+	/* 确保容器有明确尺寸 */
+	#waybillData {
+            width: 260px;
+            height: 140px;
+			display: none;
+        }
+	#chartContainer3 {
+		width: 260px;
+		height: 180px;
+		margin: auto;
+		color: rgb(98, 185, 238);
+	}
+	#all_orders{
+		width: 300px;
+		height: 70px;
+		margin: auto;
+		color: rgb(98, 185, 238);
+	}
+	#all_present{
+		width: 300px;
+		height:130px;
+		margin: auto;
+		color: rgb(98, 185, 238);
+	}
+</style>
+</head>
+<body>
+	<div id="loader"></div>
+	<script type="text/javascript">
+		$('#loader').shCircleLoader({color: "#00deff"});
+	</script>
+	<!--Top Start!-->
+	<div class="scanboardWp animsition">
+		<div id="top">
+			<div class="wp clearfix">
+				<div class="left pageTit">
+					<a class="summaryBtn" href="javascript:;">物流汇总看板</a>
+				</div>
+				<div class="center topLogo">
+					<img src="images/logo.png">
+				</div>
+				<div class="right topBar">
+					<div class="topTime" style="color: #54ffff;">时间加载中...</div>
+					<div class="clearfix">
+						<a href="login.html" class="signOut fr">退出</a>
+						<div class="company fr">
+							<h3 style="">资源优选</h3>
+							<div class="dropdown">
+								<a href="https://www.heywhale.com/home/project">数据来源</a>
+								<a href="https://echarts.apache.org/examples/zh/index.html">echarts官网link</a>
+								<a href="https://www.kaggle.com/">优质资源</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--Top End!-->
+		
+		<!--Main Start!-->
+		<div id="main" class="wp clearfix">
+			<div class="left">
+				<!--货品用户反馈情况-->
+				<div class="item waybill" style="height: 200px;">
+					<div class="itemTit">
+						<span class="border-yellow">货品用户反馈情况
+							<button class="summaryBtn1" id="toggleButton" style="position: absolute; left: 290px;">图表</button>
+						</span>
+					</div>
+					<div class="itemCon itembg" id="originalData">
+						<div class="progress" progress="67.79%">
+							<h3 class="clearfix"><span>质量合格</span><i>787单</i></h3>
+							<div class="progressBar">
+								<span></span>
+							</div>
+							<h4>0%</h4>
+						</div>
+						<div class="progress" progress="15.93%">
+							<h3 class="clearfix"><span>返修</span><i>185单</i></h3>
+							<div class="progressBar">
+								<span></span>
+							</div>
+							<h4>0%</h4>
+						</div>
+						<div class="progress" progress="16.28%">
+							<h3 class="clearfix"><span>拒货</span><i>189单</i></h3>
+							<div class="progressBar">
+								<span></span>
+							</div>
+							<h4>0%</h4>
+						</div>
+					</div>
+					<div id="chartContainer"></div>
+
+				</div>
+
+				<!--货品交货状况-->
+				<div class="item waybill">
+					<div class="itemTit">
+						<span class="border-green">货品交货状况
+							<button class="summaryBtn1" id="toggleButton1" style="position: absolute; left: 290px;">图表</button>
+						</span>
+					</div>
+					<div  class="itemCon itembg">
+						<table class="tableStyle" id="originalData1">
+							<thead>
+								<tr>
+									<th>销售月份</th>
+									<th>按时交货</th>
+									<th>晚交货</th>
+									<th>按时交货率</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>7</td>
+									<td>189</td>
+									<td>13</td>
+									<td>0.935</td>
+								</tr>
+								<tr>
+									<td>8</td>
+									<td>218</td>
+									<td>35</td>
+									<td>0.861</td>
+								</tr>
+								<tr>
+									<td>9</td>
+									<td>122</td>
+									<td>9</td>
+									<td>0.931</td>
+								</tr>
+								<tr>
+									<td>10</td>
+									<td>238</td>
+									<td>31</td>
+									<td>0.884</td>
+								</tr>
+								<tr>
+									<td>11</td>
+									<td>101</td>
+									<td>25</td>
+									<td>0.801</td>
+								</tr>
+								<tr>
+									<td>12</td>
+									<td>146</td>
+									<td>18</td>
+									<td>0.890</td>
+								</tr>
+							</tbody>
+						</table>
+						<div id="chartContainer1" class="chartContainer1" style="display: none;"></div>
+					</div>
+				</div>
+
+				<!--各货品的月销售情况-->
+				<div class="item">
+					<div class="itemTit">
+						<span class="border-blue">各货品的月销售情况
+						</span>
+					</div>
+					<div class="itemCon itembg">
+						<div id="chartContainer3"></div>
+					</div>
+				</div>
+			</div>
+
+			<div class="center">
+				<div class="centerWp">
+					<!--中间大地图-->
+					<div class="mapContainer">
+						<div class="btnLayer">
+							<div class="search">
+								<div class="searchInner">
+									<a href="javascript:;" class="searchBtn"><span class="icoSearch"></span></a>
+									<form class="searchForm">
+										<button class="icoSearch"></button>
+										<input type="text" name="" placeholder="请搜索车辆">
+									</form>
+								</div>
+							</div>
+							<a href="javascript:;" class="infoBtn"><span class="icoCar"></span></a>
+							
+						</div>
+						<div id="myMap" class="item"></div>
+					</div>
+					
+					<!--月运单量统计图-->
+					<div class="billChart">
+						<div class="itemTit">
+							<span class="border-blue">货品2销售单数柱状图<small>(2016年10月)</small>
+								<!-- <input type="file" id="fileInput"  style="position: absolute; left: 600px;"> -->
+								<!-- <a href=".\stuff2.html" style="position: absolute; left: 600px;">货品2的具体销售情况</a> -->
+								<!-- <button class="summaryBtn1" id="toggleButton1" style="position: absolute; left: 290px;">图表</button> -->
+								<button onclick="window.location.href = 'stuff2.html';" class="summaryBtn1" style="position: absolute; left: 800px;">
+									货品2的具体销售情况
+								</button>
+								<!-- <button id="toggleButton4">Toggle Chart</button> -->
+							</span>
+							
+						</div>
+						<div id="myChart1"></div>
+						<!-- <div id="main11"></div> -->
+					</div>
+				</div>
+			</div>
+
+			<div class="right">
+				<!--总计运单数-->
+				<div class="item total itembg">
+					<div class="itemTit">
+						<span class="border-yellow">总计销售额与运单数量</span>
+					</div>
+					<div class="itemCon">
+						<!-- <div class="totalNum"><strong id="totalNum" total="88699">0</strong><span>单</span></div> -->
+						<div class="totalNum"><strong id="totalNum" total="14021">0</strong><span>万元</span></div>
+						<div id="all_orders"></div>
+					</div>
+				</div>
+
+				<!--基本信息-->
+				<div class="item basicInfo">
+					<div class="itemTit">
+						<span class="border-green">各货品质量情况</span>
+					</div>
+					<div class="itemCon itembg">
+						<!-- <div class="infoPie">
+							<ul class="clearfix">
+								<li class="color-yellow">
+									<span class="border-yellow" id="indicator1" total="32">0</span>
+									<p>在途车辆</p>
+								</li>
+								<li class="color-green">
+									<span class="border-green" id="indicator2" total="65">0</span>
+									<p>出车次数</p>
+								</li>
+								<li class="color-blue">
+									<span class="border-blue" id="indicator3" total="100">0</span>
+									<p>今日订单</p>
+								</li>
+							</ul>
+							<div id="indicatorContainer"></div>
+						</div> -->
+						<div id="all_present"> </div>
+					</div>
+				</div>
+
+				<!--运单状态-->
+				<div class="item billState">
+					<div class="itemTit">
+						<span class="border-green">运单状态</span>
+					</div>
+					<div class="itemCon">
+						<div class="StateBox">
+							<div class="StateTit">
+								<span>订单编号</span>
+								<span>交货时间</span>
+								<span>部分订单交付情况</span>
+							</div>
+							<div id="FontScroll">
+								<ul>
+									<li>
+										<div class="fontInner clearfix">
+											<span>P096311
+											</span>
+											<span>2016/9/30</span>											</span>
+											<span>
+												<div class="progress" progress="80%">
+													<div class="progressBar">
+														<span></span>
+													</div>
+													<h3><i><h4></h4></i></h3>
+												</div>
+											</span>
+										</div>
+									</li>
+									<li>
+										<div class="fontInner clearfix">
+											<span>P096826
+											</span>
+											<span>2016/10/30</span>
+											<span>
+												<div class="progress" progress="100%">
+													<div class="progressBar">
+														<span></span>
+													</div>
+													<h3><i><h4></h4></i></h3>
+												</div>
+											</span>
+										</div>
+									</li>
+									<li>
+										<div class="fontInner clearfix">
+											<span>P097435</span>
+											<span>2016/9/30</span>
+											<span>
+												<div class="progress" progress="50%">
+													<div class="progressBar">
+														<span></span>
+													</div>
+													<h3><i><h4></h4></i></h3>
+												</div>
+											</span>
+										</div>
+									</li>
+									<li>
+										<div class="fontInner clearfix">
+											<span>P097446</span>
+											<span>2017/1/26</span>
+											<span>
+												<div class="progress" progress="80%">
+													<div class="progressBar">
+														<span></span>
+													</div>
+													<h3><i><h4></h4></i></h3>
+												</div>
+											</span>
+										</div>
+									</li>
+									<li>
+										<div class="fontInner clearfix">
+											<span>P097446</span>
+											<span>2017/1/26</span>
+											<span>
+												<div class="progress" progress="20%">
+													<div class="progressBar">
+														<span></span>
+													</div>
+													<h3><i><h4></h4></i></h3>
+												</div>
+											</span>
+										</div>
+									</li>
+									<li>
+										<div class="fontInner clearfix">
+											<span>P098065</span>
+											<span>2016/10/15</span>
+											<span>
+												<div class="progress" progress="50%">
+													<div class="progressBar">
+														<span></span>
+													</div>
+													<h3><i><h4></h4></i></h3>
+												</div>
+											</span>
+										</div>
+									</li>
+									<li>
+										<div class="fontInner clearfix">
+											<span>P098065</span>
+											<span>2016/11/10</span>
+											<span>
+												<div class="progress" progress="100%">
+													<div class="progressBar">
+														<span></span>
+													</div>
+													<h3><i><h4></h4></i></h3>
+												</div>
+											</span>
+										</div>
+									</li>
+									<li>
+										<div class="fontInner clearfix">
+											<span>P099725</span>
+											<span>2016/8/3</span>
+											<span>
+												<div class="progress" progress="80%">
+													<div class="progressBar">
+														<span></span>
+													</div>
+													<h3><i><h4></h4></i></h3>
+												</div>
+											</span>
+										</div>
+									</li>
+									<li>
+										<div class="fontInner clearfix">
+											<span>P098823</span>
+											<span>2016/11/30</span>
+											<span>
+												<div class="progress" progress="20%">
+													<div class="progressBar">
+														<span></span>
+													</div>
+													<h3><i><h4></h4></i></h3>
+												</div>
+											</span>
+										</div>
+									</li>
+									<li>
+										<div class="fontInner clearfix">
+											<span>P099725</span>
+											<span>2016/11/3</span>
+											<span>
+												<div class="progress" progress="80%">
+													<div class="progressBar">
+														<span></span>
+													</div>
+													<h3><i><h4></h4></i></h3>
+												</div>
+											</span>
+										</div>
+									</li>
+									<li>
+										<div class="fontInner clearfix">
+											<span>P109038</span>
+											<span>2017/2/28</span>
+											<span>
+												<div class="progress" progress="50%">
+													<div class="progressBar">
+														<span></span>
+													</div>
+													<h3><i><h4></h4></i></h3>
+												</div>
+											</span>
+										</div>
+									</li>
+									<li>
+										<div class="fontInner clearfix">
+											<span>P110672</span>
+											<span>2016/12/15</span>
+											<span>
+												<div class="progress" progress="100%">
+													<div class="progressBar">
+														<span></span>
+													</div>
+													<h3><i><h4></h4></i></h3>
+												</div>
+											</span>
+										</div>
+									</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--Main End!-->
+	</div>
+
+	<div class="filterbg"></div>
+	<div class="popup">
+		<a href="javascript:;" class="popupClose"></a>
+		<div class="summary">
+			<div class="summaryTop">
+				<div id="summaryPie1" class="summaryPie"></div>
+				<div id="summaryPie2" class="summaryPie"></div>
+				<div id="summaryPie3" class="summaryPie"></div>
+			</div>
+			<div class="summaryBottom">
+				<div class="summaryBar">
+					<div class="summaryTit">
+						<img src="images/tit1.png">
+					</div>
+					<div id="summaryBar"></div>
+				</div>
+				
+				<div class="summaryLine">
+					<div class="summaryTit">
+						<img src="images/tit2.png">
+					</div>
+					<div id="summaryLine"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="carInfo">
+		<a href="javascript:;" class="carClose"></a>
+		<div class="infoBox">
+			<div class="infoTop">
+				<div class="infoTit">
+					<img src="images/tit3.png">
+				</div>
+			</div>
+			<div class="infoMain">
+				<div class="infoLeft fl">
+					<div class="topSearch">
+						<form>
+							<button></button>
+							<input type="text" name="" placeholder="请输入车牌号搜索">
+						</form>
+					</div>
+					<div class="carState">
+						<h3>
+							<span class="fl">车牌号码</span>
+							<span class="fr">状态</span>
+						</h3>
+						<ul class="stateUl">
+							<li>
+								<p>粤A3456344</p>
+								<span class="work">工作</span>
+							</li>
+							<li>
+								<p>粤A3456344</p>
+								<span class="nowork">休息</span>
+							</li>
+							<li>
+								<p>粤A3456344</p>
+								<span class="work">工作</span>
+							</li>
+							<li>
+								<p>粤A3456344</p>
+								<span class="nowork">休息</span>
+							</li>
+							<li>
+								<p>粤A3456344</p>
+								<span class="work">工作</span>
+							</li>
+							<li>
+								<p>粤A3456344</p>
+								<span class="nowork">休息</span>
+							</li>
+							<li>
+								<p>粤A3456344</p>
+								<span class="work">工作</span>
+							</li>
+							<li>
+								<p>粤A3456344</p>
+								<span class="nowork">休息</span>
+							</li>
+							<li>
+								<p>粤A3456344</p>
+								<span class="work">工作</span>
+							</li>
+							<li>
+								<p>粤A3456344</p>
+								<span class="nowork">休息</span>
+							</li>
+							<li>
+								<p>粤A3456344</p>
+								<span class="work">工作</span>
+							</li>
+							<li>
+								<p>粤A3456344</p>
+								<span class="nowork">休息</span>
+							</li>
+							<li>
+								<p>粤A3456344</p>
+								<span class="work">工作</span>
+							</li>
+							<li>
+								<p>粤A3456344</p>
+								<span class="nowork">休息</span>
+							</li>
+							<li>
+								<p>粤A3456344</p>
+								<span class="work">工作</span>
+							</li>
+							<li>
+								<p>粤A3456344</p>
+								<span class="nowork">休息</span>
+							</li>
+							<li>
+								<p>粤A3456344</p>
+								<span class="work">工作</span>
+							</li>
+							<li>
+								<p>粤A3456344</p>
+								<span class="nowork">休息</span>
+							</li>
+						</ul>
+					</div>
+				</div>
+				<div class="infoRight fr">
+					<div class="rightWp">
+						<div class="carIntro">
+							<div class="introBox fl">
+								<div class="carImg fl">
+									<img src="images/car.jpg">
+								</div>
+								<div class="carText fl clearfix">
+									<p>车辆类型：大车</p>
+									<p>本周工作时长：34.45小时</p>
+									<p>车牌号码：粤A3456344</p>
+									<p>统计时段：2016-7-1至2016-12-31</p>
+									<p>可载容量：20.0方</p>
+									<p>当前状态：<span class="color-green">工作</span></p>
+								</div>
+							</div>
+							<div class="driver fr">
+								<div class="photo">
+									<img src="images/photo.jpg">
+								</div>
+								<p>司机：kevin</p>
+							</div>
+						</div>
+						<div class="timetable">
+							<div class="topTool">
+								<div class="tableExplain fl">
+									<div class="itemExplain fl">
+										<span class="bg-green"></span>
+										<p>司机工作时间</p>
+									</div>
+									<div class="itemExplain fl">
+										<span class="bg-blue"></span>
+										<p>标准白晚班时间</p>
+									</div>
+								</div>
+								<div class="topBtns fr">
+									<a href="javascript:;" class="prevWeek">上一周</a>
+									<a href="javascript:;" class="nextWeek">下一周</a>
+								</div>
+							</div>
+							<div class="tiemWp">
+								<div class="timeInner">
+									<div class="weekList">
+										<div class="weekItem">
+											<div class="space1"></div>
+											<p>星期一</p>
+										</div>
+										<div class="weekItem">
+											<div class="space1"></div>
+											<p>星期二</p>
+										</div>
+										<div class="weekItem">
+											<div class="space1"></div>
+											<p>星期三</p>
+										</div>
+										<div class="weekItem">
+											<div class="space1"></div>
+											<p>星期四</p>
+										</div>
+										<div class="weekItem">
+											<div class="space1"></div>
+											<p>星期五</p>
+										</div>
+										<div class="weekItem">
+											<div class="space1"></div>
+											<p>星期六</p>
+										</div>
+										<div class="weekItem">
+											<div class="space1"></div>
+											<p>星期天</p>
+										</div>
+									</div>
+									<div class="timeBox">
+										<div class="dataContainer">
+											<div class="dataBox">
+												<div class="space1"></div>
+												<div class="workTime"></div>
+												<div class="space2"></div>
+												<div class="standard"></div>
+												<div class="space3"></div>
+											</div>
+											<div class="dataBox">
+												<div class="space1"></div>
+												<div class="workTime"></div>
+												<div class="space2"></div>
+												<div class="standard"></div>
+												<div class="space3"></div>
+											</div>
+											<div class="dataBox">
+												<div class="space1"></div>
+												<div class="workTime"></div>
+												<div class="space2"></div>
+												<div class="standard"></div>
+												<div class="space3"></div>
+											</div>
+											<div class="dataBox">
+												<div class="space1"></div>
+												<div class="workTime"></div>
+												<div class="space2"></div>
+												<div class="standard"></div>
+												<div class="space3"></div>
+											</div>
+											<div class="dataBox">
+												<div class="space1"></div>
+												<div class="workTime"></div>
+												<div class="space2"></div>
+												<div class="standard"></div>
+												<div class="space3"></div>
+											</div>
+											<div class="dataBox">
+												<div class="space1"></div>
+												<div class="workTime"></div>
+												<div class="space2"></div>
+												<div class="standard"></div>
+												<div class="space3"></div>
+											</div>
+											<div class="dataBox">
+												<div class="space1"></div>
+												<div class="workTime"></div>
+												<div class="space2"></div>
+												<div class="standard"></div>
+												<div class="space3"></div>
+											</div>
+										</div>
+										<div class="timeLine line1"><span>0:00</span></div>
+										<div class="timeLine line2"><span>3:00</span></div>
+										<div class="timeLine line3"><span>6:00</span></div>
+										<div class="timeLine line4"><span>9:00</span></div>
+										<div class="timeLine line5"><span>12:00</span></div>
+										<div class="timeLine line6"><span>15:00</span></div>
+										<div class="timeLine line7"><span>18:00</span></div>
+										<div class="timeLine line8"><span>21:00</span></div>
+										<div class="timeLine line9"><span>24:00</span></div>
+									</div>
+								</div>
+								<div class="totalTable">
+									<div class="totalTit">
+										<span>总用时/天</span>
+										<span>总单数/天</span>
+									</div>
+									<div class="totalData">
+										<div class="totalItem">
+											<div class="space1"></div>
+											<div class="tatleWp">
+												<span>0.00</span>
+												<span>0</span>
+											</div>
+											<div class="totalBar"></div>
+										</div>
+										<div class="totalItem">
+											<div class="space1"></div>
+											<div class="tatleWp">
+												<span>0.00</span>
+												<span>0</span>
+											</div>
+											<div class="totalBar"></div>
+										</div>
+										<div class="totalItem">
+											<div class="space1"></div>
+											<div class="tatleWp">
+												<span>0.00</span>
+												<span>0</span>
+											</div>
+											<div class="totalBar"></div>
+										</div>
+										<div class="totalItem">
+											<div class="space1"></div>
+											<div class="tatleWp">
+												<span>0.00</span>
+												<span>0</span>
+											</div>
+											<div class="totalBar"></div>
+										</div>
+										<div class="totalItem">
+											<div class="space1"></div>
+											<div class="tatleWp">
+												<span>0.00</span>
+												<span>0</span>
+											</div>
+											<div class="totalBar"></div>
+										</div>
+										<div class="totalItem">
+											<div class="space1"></div>
+											<div class="tatleWp">
+												<span>0.00</span>
+												<span>0</span>
+											</div>
+											<div class="totalBar"></div>
+										</div>
+										<div class="totalItem">
+											<div class="space1"></div>
+											<div class="tatleWp">
+												<span>0.00</span>
+												<span>0</span>
+											</div>
+											<div class="totalBar"></div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<canvas id="canvas" style="position: absolute;top: 0;left: 0;"></canvas> 
+</body>
+<script type="text/javascript" src="js/bg.js"></script>
+<script type="text/javascript" src="js/scanboard.js"></script>
+<script type="text/javascript" src="js/fontscroll.js"></script>
+<script type="text/javascript" src="js/jquery.animsition.js"></script>
+<script type="text/javascript" src="js/jquery.nicescroll.js"></script>
+<script type="text/javascript" src="js/echarts.min.js"></script>
+<script type="text/javascript" src="http://webapi.amap.com/maps?v=1.4.3&key=f8ffe058b8e6f5b05e8ff43ca4207393"></script>
+
+</html>
